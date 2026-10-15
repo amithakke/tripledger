@@ -1,0 +1,14 @@
+{
+  "name": "tripledger-travel-expense-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Animated travel expense tracker with destination map and a lightweight Express backend.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TripLedger — Travel Expense Tracker</title>
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<canvas id="travel-motion-canvas" aria-hidden="true"></canvas>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">✦</div>TripLedger</div>
+    <div>
+      <div class="nav-label">Workspace</div>
+      <nav class="nav" aria-label="Main navigation">
+        <button class="active" data-page="overview"><span class="ico">◫</span>Overview</button>
+        <button data-page="spend"><span class="ico">↔</span>Spend & expenses</button>
+        <button data-page="trip"><span class="ico">⌖</span>Trip & map</button>
+      </nav>
+    </div>
+    <div class="sidebar-bottom"><strong>Every trip, in control.</strong><p>Keep tickets, stays, meals and little travel moments in one place.</p><button id="sideAdd">＋ Add an expense</button></div>
+  </aside>
+  <main class="main">
+    <section id="view-overview" class="page-view active">
+    <header class="topbar">
+      <div><div class="eyebrow" id="greeting">YOUR TRAVEL FINANCES</div><h1 id="pageTitle">Trip overview</h1></div>
+      <div class="top-actions"><div class="date-pill" id="todayDate"></div><button class="primary" id="addBtn">＋ Add expense</button></div>
+    </header>
+
+    <section class="trip-hero">
+      <div>
+        <span class="trip-tag">✈ CURRENT ADVENTURE</span>
+        <h2 id="tripName">Your Trip</h2>
+        <p id="tripDates">Add your travel dates to get started</p>
+        <div class="trip-meta"><span>⌖ <b id="tripDestination">Your destination</b></span><span>◷ <span id="tripDays">Trip in progress</span></span><span>◈ <span id="tripCount">0 expenses logged</span></span></div>
+      </div>
+      <div class="budget-side">
+        <div class="budget-line"><span>Trip budget</span><strong id="heroBudget">₹85,000</strong></div>
+        <div class="progress"><span id="heroProgress" style="width:57%"></span></div>
+        <div class="budget-foot"><span id="heroSpent">₹48,650 spent</span><span id="heroRemaining">₹36,350 left</span></div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <article class="stat"><div class="stat-top"><span>Total trip spend</span><span class="stat-icon">💳</span></div><div class="stat-value" id="totalSpend">₹0</div><div class="stat-note">All recorded trip expenses</div></article>
+      <article class="stat"><div class="stat-top"><span>Budget remaining</span><span class="stat-icon">🧭</span></div><div class="stat-value" id="remaining">₹0</div><div class="stat-note" id="remainingNote">Available for the rest of your trip</div></article>
+      <article class="stat"><div class="stat-top"><span>Daily average</span><span class="stat-icon">📅</span></div><div class="stat-value" id="dailyAverage">₹0</div><div class="stat-note">Based on days with expenses</div></article>
+      <article class="stat"><div class="stat-top"><span>Transactions</span><span class="stat-icon">🧾</span></div><div class="stat-value" id="transactionCount">0</div><div class="stat-note"><span class="positive">Organised</span> in one trip ledger</div></article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel">
+        <div class="panel-head"><div><h3>Spending over time</h3><div class="panel-sub">Daily spend in your selected trip</div></div><select class="select-small" id="chartRange" aria-label="Chart range"><option value="7">Last 7 days</option><option value="14">Last 14 days</option></select></div>
+        <div class="chart" id="spendingChart"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><h3>Where your money goes</h3><div class="panel-sub">Breakdown by expense category</div></div></div>
+        <div class="category-list" id="categoryList"></div>
+      </article>
+    </section>
+
+    <section class="panel transactions" id="transactionsPanel">
+      <div class="panel-head"><div><h3>Recent expenses</h3><div class="panel-sub">Tickets, accommodation, food and everything in between</div></div><div class="filters"><input class="search" id="searchInput" placeholder="Search expenses…" aria-label="Search expenses"><select class="select-small" id="categoryFilter" aria-label="Filter category"><option value="">All categories</option></select></div></div>
+      <div class="table-scroll"><table class="tx-table"><thead><tr><th>Expense</th><th>Category</th><th>Date</th><th>Payment</th><th>Amount</th><th></th></tr></thead><tbody id="transactionRows"></tbody></table></div>
+    </section>
+    <div class="footer-note">TripLedger demo · Your entries are saved in this browser only using local storage.</div>
+    </section>
+
+    <section id="view-spend" class="page-view">
+      <header class="topbar">
+        <div><div class="eyebrow">YOUR TRAVEL FINANCES</div><h1>Spend & expenses</h1></div>
+        <div class="top-actions"><button class="primary" id="spendAddBtn">＋ Add expense</button></div>
+      </header>
+      <section class="stats">
+        <article class="stat"><div class="stat-top"><span>Total spent</span><span class="stat-icon">💳</span></div><div class="stat-value" id="spendTotal">₹0</div><div class="stat-note">All expenses for this trip</div></article>
+        <article class="stat"><div class="stat-top"><span>Budget left</span><span class="stat-icon">🧭</span></div><div class="stat-value" id="spendLeft">₹0</div><div class="stat-note">Budget minus all expenses</div></article>
+        <article class="stat"><div class="stat-top"><span>Entries</span><span class="stat-icon">🧾</span></div><div class="stat-value" id="spendCount">0</div><div class="stat-note">Recorded transactions</div></article>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><div><h3>All trip expenses</h3><div class="panel-sub">Add each cost as you book or spend: tickets, hotels, food, transport and more.</div></div><div class="filters"><input class="search" id="spendSearch" placeholder="Search expenses…" aria-label="Search expenses"><select class="select-small" id="spendCategoryFilter" aria-label="Filter expense category"><option value="">All categories</option></select></div></div>
+        <div class="table-scroll"><table class="tx-table"><thead><tr><th>Expense</th><th>Category</th><th>Date</th><th>Payment</th><th>Amount</th><th></th></tr></thead><tbody id="spendRows"></tbody></table></div>
+      </section>
+      <div class="footer-note">Each saved expense updates the overall trip budget automatically.</div>
+    </section>
+
+    <section id="view-trip" class="page-view">
+      <header class="topbar">
+        <div><div class="eyebrow">MAKE IT YOUR TRIP</div><h1>Trip details & destination</h1></div>
+      </header>
+      <section class="panel" style="margin-bottom:20px">
+        <div class="panel-head"><div><h3>Plan your trip</h3><div class="panel-sub">Choose where you want to go, set your dates and enter your total budget. Everything starts at zero.</div></div></div>
+        <div class="form-grid">
+          <div class="field"><label for="destinationInput">Destination</label><input id="destinationInput" placeholder="e.g. Goa, Manali, Tokyo"></div>
+          <div class="field"><label for="tripBudgetInput">Total trip budget (₹)</label><input id="tripBudgetInput" type="number" min="0" step="0.01" placeholder="0"></div>
+          <div class="field"><label for="startDateInput">Departure date</label><input id="startDateInput" type="date"></div>
+          <div class="field"><label for="endDateInput">Return date</label><input id="endDateInput" type="date"></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px">
+          <button class="primary" id="saveBudgetBtn" type="button">Save trip details</button>
+          <button class="secondary" id="showMapBtn" type="button">⌖ Show destination on map</button>
+          <span id="budgetSaveStatus" style="font-size:11px;color:var(--muted)"></span>
+        </div>
+        <div id="mapWrap" style="display:none;margin-top:16px">
+          <div style="border-radius:14px;overflow:hidden;border:1px solid var(--line)"><iframe id="destinationMap" title="Trip destination map" width="100%" height="360" style="border:0;display:block" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="about:blank"></iframe></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px">Map search is provided by OpenStreetMap.</div>
+          <a id="openMapLink" href="#" target="_blank" rel="noopener noreferrer" style="display:inline-block;margin-top:8px;font-size:12px;color:var(--teal);font-weight:700">Open larger map ↗</a>
+        </div>
+      </section>
+    </section>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <div class="modal-head"><h2 id="modalTitle">Add an expense</h2><button class="close" id="closeModal" aria-label="Close">×</button></div>
+    <form id="expenseForm">
+      <div class="form-grid">
+        <div class="field full"><label for="description">Expense name *</label><input id="description" required placeholder="e.g. Return flight to Bali"></div>
+        <div class="field"><label for="amount">Amount (₹) *</label><input id="amount" type="number" min="0.01" step="0.01" required placeholder="0.00"></div>
+        <div class="field"><label for="category">Category *</label><select id="category" required></select></div>
+        <div class="field"><label for="date">Date *</label><input id="date" type="date" required></div>
+        <div class="field"><label for="payment">Payment method</label><select id="payment"><option>UPI</option><option>Credit card</option><option>Debit card</option><option>Cash</option><option>Bank transfer</option><option>Wallet</option><option>Other</option></select></div>
+        <div class="field"><label for="merchant">Merchant / provider</label><input id="merchant" placeholder="e.g. Indigo, hotel, restaurant"></div>
+        <div class="field"><label for="people">Paid by</label><input id="people" placeholder="e.g. Alex"></div>
+        <div class="field full"><label for="notes">Notes (optional)</label><textarea id="notes" rows="2" placeholder="Booking reference, who joined, or anything to remember"></textarea></div>
+      </div>
+      <div class="notice">Tip: record flight and train tickets, hotels, restaurants, taxis, local transport, attractions, shopping, fees, tips and miscellaneous charges here.</div>
+      <div class="form-actions"><button type="button" class="secondary" id="cancelModal">Cancel</button><button class="primary" type="submit">Save expense</button></div>
+    </form>
+  </div>
+</div>
+<script src="script.js" defer></script>
+</body>
+</html>
